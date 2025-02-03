@@ -8,7 +8,7 @@
     "dev": "npm run build && npm run start"
   },
   "exports":{
-    "/config": "./src/index.ts"
+    "./config": "./src/index.ts"
   },
   "devDependencies": {
     "@repo/typescript-config":"workspace:*"
