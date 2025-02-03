@@ -104,29 +104,39 @@ app.post('/room', middleware, async(req,res)=>{
 
 app.get('/chat/:roomId', async(req,res)=>{
     const roomId = Number(req.params.roomId);
+    try{
 
-    const messages = await prismaClient.chat.findMany({
-        where:{
-            roomId
-        },
-        orderBy: {id: 'desc'},
-        take: 50
-        
-    })
-    res.json({
-        messages
-    })
+        const messages = await prismaClient.chat.findMany({
+            where:{
+                roomId
+            },
+            orderBy: {id: 'desc'},
+            take: 50
+            
+        })
+        res.json({
+            messages
+        })
+    }catch(e){
+        res.json({
+            message:"error in chat route"
+        })
+    }
 })
 
 app.get('/room/:slug', async(req,res)=>{
     const slug = req.params.slug;
+    try{
 
-    const room = await prismaClient.room.findFirst({where:{
-        slug
-    }})
-    res.json({
-        roomId: room?.id
-    })
+        const room = await prismaClient.room.findFirst({where:{
+            slug
+        }})
+        res.json({
+            roomId: room?.id
+        })
+    }catch(e){
+        console.log(e)
+    }
 })
 
 

@@ -13,7 +13,7 @@ export function ChatRoomClient({
 }){
     const { socket, loading} = useSocket();
     const [chats, setChats] = useState(messages)
-    const [currentMessage, setCurrentMessage] = useState<string>()
+    const [currentMessage, setCurrentMessage] = useState<string>('')
 
     useEffect(()=>{
         if(socket && !loading){
@@ -27,16 +27,19 @@ export function ChatRoomClient({
                 const parsedData = JSON.parse(event.data);
 
                 if(parsedData.type === "CHAT"){
-                    setChats(c => [...c, parsedData.message])
+                    setChats(c => [...c, {message: parsedData.message}])
                 }
             }
+        }
+        return ()=>{
+            socket?.close()
         }
 
     },[socket, loading])
 
 
     return <div>
-        {messages.map(c => <div>{c.message}</div>)}
+        {chats.map(c => <div>{c.message}</div>)}
         <input type="text" placeholder="Enter message" value={currentMessage} onChange={(e)=> setCurrentMessage(e.target.value)}/>
         <button onClick={()=>{
             socket?.send(JSON.stringify({
