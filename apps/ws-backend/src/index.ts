@@ -54,7 +54,11 @@ wss.on("connection", (ws, request)=>{
     })
 
     ws.on("message", (data)=>{
-        const parsedData = JSON.parse(data as unknown as string);
+        let parsedData;
+        if(typeof parsedData !== "string"){
+            parsedData = JSON.parse(data.toString())
+        }
+
         if(parsedData.type === "JOIN_ROOM"){
             const user = users.find(u => u.ws === ws);
             user?.rooms.push(parsedData.roomId)
@@ -76,7 +80,7 @@ wss.on("connection", (ws, request)=>{
                     user.ws.send(JSON.stringify({
                         type:"CHAT",
                         message,
-                        roomId
+                        roomId: Number(roomId)
                     }))
                 }
             })

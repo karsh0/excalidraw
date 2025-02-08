@@ -3,17 +3,22 @@
 import { InitCanvas } from "@/app/draw";
 import { useEffect, useRef } from "react";
 
-export function Canvas({roomId, socket}:{roomId: string, socket: WebSocket| null}){
+export function Canvas({roomId, socket}:{roomId: string, socket: WebSocket}){
  const canvasRef = useRef<HTMLCanvasElement>(null)
     useEffect(()=>{
+        async function main(){
 
-        if(canvasRef.current){
-            const canvas = canvasRef.current;
-
-            InitCanvas(canvas, roomId, socket)
             
+            if(canvasRef.current){
+                const canvas = canvasRef.current;
+                
+                await InitCanvas(canvas, roomId, socket)
+                
+                console.log(canvasRef.current)
+                console.log(await InitCanvas)
+            }
         }
-
+        main()
     },[canvasRef])
 
 

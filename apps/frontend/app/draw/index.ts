@@ -1,5 +1,6 @@
 import { HTTP_BACKEND } from "@/config"
 import axios from "axios"
+import { headers } from "next/headers"
 import { root } from "postcss"
 
 type Shape = {
@@ -16,13 +17,16 @@ type Shape = {
  }
 
 
-export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket | null){
+export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket){
     const ctx = canvas.getContext("2d")
 
     let existingShapes: Shape[] = await getExistingShapes(roomId)
+    console.log(existingShapes)
 
     if(!ctx) return;
-    if(!socket) return;
+    if(!socket) {
+        return;
+    };
 
     socket.onmessage = (ev) =>{
         const message = JSON.parse(ev.data)
@@ -36,7 +40,7 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
     }
 
     ctx.fillStyle = "rgba(0,0,0)"
-    
+    console.log(ctx.fillStyle)
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     let clicked = false;
@@ -69,6 +73,7 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
                 height
             })
         }))
+        //Todo: add the messages in db
     })
     canvas.addEventListener("mousemove", (e)=>{
         if(clicked){
@@ -103,5 +108,6 @@ async function getExistingShapes(roomId: string){
         const messageData = JSON.parse(x.message);
         return messageData;
     })
+    console.log(shapes)
     return shapes
 }

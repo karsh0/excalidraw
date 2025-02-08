@@ -104,6 +104,27 @@ app.post('/room', middleware, async(req,res)=>{
     }
 })
 
+app.post('/chat/:roomId', middleware, async(req,res)=>{
+    const roomId = Number(req.params.roomId);
+    const { message } = req.body;
+    try{
+
+        await prismaClient.chat.create({
+            data:{
+                userId: req.userId,
+                roomId,
+                message
+            }
+        })
+        res.json({
+            message:"message added"
+        })
+    }catch(e){
+        res.json({
+            message:"error in chat route"
+        })
+    }
+})
 app.get('/chat/:roomId', async(req,res)=>{
     const roomId = Number(req.params.roomId);
     try{
