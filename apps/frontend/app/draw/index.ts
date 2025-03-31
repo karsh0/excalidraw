@@ -1,7 +1,5 @@
 import { HTTP_BACKEND } from "@/config"
 import axios from "axios"
-import { headers } from "next/headers"
-import { root } from "postcss"
 
 type Shape = {
     type: "rect",
@@ -21,9 +19,12 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
     const ctx = canvas.getContext("2d")
 
     let existingShapes: Shape[] = await getExistingShapes(roomId)
+    
+    if(!ctx) return;
+    
+    clearCanvas(existingShapes, canvas, ctx)
     console.log(existingShapes)
 
-    if(!ctx) return;
     if(!socket) {
         return;
     };
@@ -40,7 +41,6 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
     }
 
     ctx.fillStyle = "rgba(0,0,0)"
-    console.log(ctx.fillStyle)
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     let clicked = false;

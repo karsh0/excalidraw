@@ -14,8 +14,6 @@ export function Canvas({roomId, socket}:{roomId: string, socket: WebSocket}){
                 
                 await InitCanvas(canvas, roomId, socket)
                 
-                console.log(canvasRef.current)
-                console.log(await InitCanvas)
             }
         }
         main()
