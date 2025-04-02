@@ -11,6 +11,8 @@
   "dependencies": {
     "@types/axios": "^0.14.4",
     "axios": "^1.7.9",
+    "lucide-react": "^0.487.0",
+    "mini-css-extract-plugin": "^2.9.2",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

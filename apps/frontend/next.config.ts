@@ -1,7 +1,12 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    appDir: true, // Ensure this is enabled for the App Router
+  },
+  webpack: (config) => {
+    // Remove any manual `mini-css-extract-plugin` config
+    return config;
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
