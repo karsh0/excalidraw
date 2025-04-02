@@ -8,10 +8,11 @@
     "dev": "npm run build && npm run start"
   },
   "dependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@repo/backend-common": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/ws": "^8.5.14",
+    "axios": "^1.7.9",
     "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.0"
   },

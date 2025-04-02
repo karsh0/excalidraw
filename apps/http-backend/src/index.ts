@@ -121,6 +121,7 @@ app.post('/chat/:roomId', middleware, async(req,res)=>{
         })
     }catch(e){
         res.json({
+            e,
             message:"error in chat route"
         })
     }
@@ -142,6 +143,7 @@ app.get('/chat/:roomId', async(req,res)=>{
         })
     }catch(e){
         res.json({
+            e,
             message:"error in chat route"
         })
     }
@@ -163,4 +165,4 @@ app.get('/room/:slug', async(req,res)=>{
 })
 
 
-app.listen(3001)
+app.listen(4001)

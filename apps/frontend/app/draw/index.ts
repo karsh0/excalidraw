@@ -22,7 +22,10 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
     
     if(!ctx) return;
     
-    clearCanvas(existingShapes, canvas, ctx)
+    if(existingShapes){
+
+        clearCanvas(existingShapes, canvas, ctx)
+    }
     console.log(existingShapes)
 
     if(!socket) {
@@ -35,7 +38,6 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
         if(message.type == "CHAT"){
             const parsedShape = JSON.parse(message.message)
             existingShapes.push(parsedShape)
-            clearCanvas(existingShapes, canvas, ctx)
         }
 
     }
@@ -51,7 +53,7 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
         startX = e.clientX;
         startY = e.clientY;
     })
-    canvas.addEventListener("mouseup", (e)=>{
+    canvas.addEventListener("mouseup", async (e)=>{
         clicked = false;
         const height = e.clientX - startX;
         const width = e.clientY - startY;
@@ -62,6 +64,21 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
             width,
             height
         })
+        
+        const sent = await axios.post(`${HTTP_BACKEND}/chat/${roomId}`,{
+            message:JSON.stringify({
+                type:"rect",
+                x: startX,
+                y: startY,
+                width,
+                height
+            })
+        },{
+            headers:{
+                authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMGMzMmMxYy04M2M2LTRlNWYtYmI4NC0zYzcyMTU3ZGQ1NDIiLCJpYXQiOjE3MzkwMzY2Mzd9._bsA_LcpgxdFvKzyh9rr4yDsjJtqx4yfwAiPW9bPM3Y`
+            }
+        })//fix: headers token
+
         socket.send(JSON.stringify({
             type:"CHAT",
             roomId,
@@ -93,6 +110,7 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
     ctx.fillRect(0, 0 ,canvas.width ,canvas.height)
 
     existingShapes.map((shape) =>{
+        console.log('shape')
         if(shape.type == "rect"){
             ctx.strokeStyle = "rgba(255,255,255)"
             ctx.strokeRect(shape.x, shape.y, shape.width, shape.height)
@@ -103,6 +121,7 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
 async function getExistingShapes(roomId: string){
     const res = await axios.get(`${HTTP_BACKEND}/chat/${roomId}`);
     const messages = res.data.messages;
+    console.log(res.data)
 
     const shapes = messages.map((x: any) =>{
         const messageData = JSON.parse(x.message);

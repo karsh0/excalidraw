@@ -1,23 +1,23 @@
 "use client"
 
-import { InitCanvas } from "@/app/draw";
-import { useEffect, useRef } from "react";
+import { Game } from "@/app/draw/Game";
+import { useEffect, useRef, useState } from "react";
 
 export function Canvas({roomId, socket}:{roomId: string, socket: WebSocket}){
- const canvasRef = useRef<HTMLCanvasElement>(null)
-    useEffect(()=>{
-        async function main(){
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [game, setGame] = useState<Game>()
 
-            
+    useEffect(()=>{            
             if(canvasRef.current){
-                const canvas = canvasRef.current;
-                
-                await InitCanvas(canvas, roomId, socket)
-                
+                const g = new Game(canvasRef.current, roomId, socket)
+                setGame(g);
+                              
             }
-        }
-        main()
-    },[canvasRef])
+
+            return()=>{
+                game?.destroy()
+            }
+        },[canvasRef])
 
 
     return <div>
