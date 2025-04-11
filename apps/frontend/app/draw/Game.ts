@@ -156,12 +156,25 @@ export class Game {
             }
         }
         else if (selectedTool === "line"){
-        
            this.ctx.beginPath();
            this.ctx.moveTo(this.startX, this.startY);
            this.ctx.lineTo(this.endX, this.endY);
            this.ctx.stroke();
            this.ctx.closePath();
+        }
+        else if(selectedTool === "arrow"){
+            const headlen = 10;
+            let dx = this.endX - this.startX;
+            let dy = this.endY - this.startY;
+            const angle = Math.atan2(dy,dx);
+            this.ctx.beginPath()
+            this.ctx.moveTo(this.startX, this.startY);
+            this.ctx.lineTo(this.endX, this.endY);
+            this.ctx.lineTo(this.endX - headlen * Math.cos(angle - Math.PI / 6), this.endY - headlen * Math.sin(angle - Math.PI / 6));
+            this.ctx.moveTo(this.endX, this.endY);
+            this.ctx.lineTo(this.endX - headlen * Math.cos(angle + Math.PI / 6), this.endY - headlen * Math.sin(angle + Math.PI / 6));
+            this.ctx.stroke()
+            this.ctx.closePath()
         }
         
 
@@ -225,6 +238,22 @@ export class Game {
                 this.ctx.stroke();
                 this.ctx.closePath();
                
+            }
+            else if(selectedTool === "arrow"){
+                this.endX = e.offsetX;
+                this.endY = e.offsetY;
+                const headlen = 10;
+                let dx = this.endX - this.startX;
+                let dy = this.endY - this.startY;
+                const angle = Math.atan2(dy,dx);
+                this.ctx.beginPath()
+                this.ctx.moveTo(this.startX, this.startY);
+                this.ctx.lineTo(this.endX, this.endY);
+                this.ctx.lineTo(this.endX - headlen * Math.cos(angle - Math.PI / 6), this.endY - headlen * Math.sin(angle - Math.PI / 6));
+                this.ctx.moveTo(this.endX, this.endY);
+                this.ctx.lineTo(this.endX - headlen * Math.cos(angle + Math.PI / 6), this.endY - headlen * Math.sin(angle + Math.PI / 6));
+                this.ctx.stroke()
+                this.ctx.closePath()
             }
         }
     }
