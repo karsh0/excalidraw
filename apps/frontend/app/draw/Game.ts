@@ -17,10 +17,21 @@ type Shape = {
     points: { x: number, y: number }[];
 } | {
     type: "line";
-    offsetX: number;
-    offSetY: number;
+    startX: number;
+    startY: number;
     endX: number;
     endY: number;
+} | {
+    type: "arrow";
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+} | {
+    type: "text";
+    x: number;
+    y: number;
+    text: string;
 }
 
 export class Game {
@@ -60,7 +71,7 @@ export class Game {
         this.canvas.removeEventListener("mousemove", this.mouseMoveHandler)
     }
 
-    setTool(tool: "circle" | "pencil" | "rect" | "line") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line" | "arrow" | "text")  {
         this.selectedTool = tool;
     }
 
@@ -85,11 +96,11 @@ export class Game {
 
     clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = "rgba(0, 0, 0)";
+        this.ctx.fillStyle = "rgba(255, 255, 255)";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
         this.existingShapes.forEach((shape) => {
-            this.ctx.strokeStyle = "rgba(255, 255, 255)";
+            this.ctx.strokeStyle = "rgba(0, 0, 0)";
     
             if (shape.type === "rect") {
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
@@ -121,6 +132,11 @@ export class Game {
         this.startX = e.clientX
         this.startY = e.clientY
         this.pencilPoints = [{ x: e.offsetX, y: e.offsetY }];
+
+        if(this.selectedTool === "text"){
+            this.ctx.font = "48px serif";
+            this.ctx.strokeText('hello', this.startX, this.startY)
+        }
     }
     mouseUpHandler = (e: any) => {
         this.clicked = false
@@ -197,7 +213,7 @@ export class Game {
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
             this.clearCanvas();
-            this.ctx.strokeStyle = "rgba(255, 255, 255)"
+            this.ctx.strokeStyle = "rgba(0,0,0)"
             const selectedTool = this.selectedTool;
             console.log(selectedTool)
             if (selectedTool === "rect") {

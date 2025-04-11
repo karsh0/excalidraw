@@ -7,7 +7,7 @@ export function IconButton({
     onClick: () => void,
     activated: boolean
 }) {
-    return <div className={`m-2 pointer rounded-full border p-2 bg-black hover:bg-gray ${activated ? "text-red-400" : "text-white"}`} onClick={onClick}>
+    return <div className={`pointer rounded-xl p-2 hover:bg-gray ${activated ? "bg-[#e0dfff]" : "text-white"}`} onClick={onClick}>
         {icon}
     </div>
 }

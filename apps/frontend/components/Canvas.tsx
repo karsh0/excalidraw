@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Circle, MoveRight, Pencil, PenLine, RectangleHorizontalIcon } from "lucide-react";
+import { Circle, MoveRight, Pencil, PenLine, RectangleHorizontalIcon, Text } from "lucide-react";
 import { Game } from "@/app/draw/Game";
 import { IconButton } from "./IconButton";
 
-export type Tool = "circle" | "rect" | "pencil" | "line" | "arrow";
+export type Tool = "circle" | "rect" | "pencil" | "line" | "arrow" | "text";
 
 export function Canvas({
     roomId,
@@ -34,10 +34,7 @@ export function Canvas({
 
     }, [canvasRef]);
 
-    return <div style={{
-        height: "100vh",
-        overflow: "hidden"
-    }}>
+    return <div className="w-screen overflow-hidden">
         <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
         <Topbar setSelectedTool={setSelectedTool} selectedTool={selectedTool} />
     </div>
@@ -47,12 +44,8 @@ function Topbar({selectedTool, setSelectedTool}: {
     selectedTool: Tool,
     setSelectedTool: (s: Tool) => void
 }) {
-    return <div style={{
-            position: "fixed",
-            top: 10,
-            left: 10
-        }}>
-            <div className="flex gap-t">
+    return <div className="fixed w-fit top-2 left-1/2 -translate-x-1/2 bg-white">
+            <div className="flex gap-2 px-2 py-2 bg-white border rounded-xl">
                 <IconButton 
                     onClick={() => {
                         setSelectedTool("pencil")
@@ -72,6 +65,9 @@ function Topbar({selectedTool, setSelectedTool}: {
                 <IconButton onClick={() => {
                     setSelectedTool("arrow")
                 }} activated={selectedTool === "arrow"} icon={<MoveRight />}></IconButton>
+                 <IconButton onClick={() => {
+                    setSelectedTool("text")
+                }} activated={selectedTool === "text"} icon={<Text />}></IconButton>
             </div>
         </div>
 }

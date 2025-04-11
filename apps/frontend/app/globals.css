@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.lucide {
+    color: black;
+    width: 19px;
+    height: 19px;
+}
