@@ -72,13 +72,13 @@ wss.on("connection", (ws, request)=>{
             user.rooms = user.rooms.filter(x => x !== parsedData.roomId)
         }
 
-        if(parsedData.type === "CHAT"){
+        if(parsedData.type === "chat"){
             const {roomId, message} = parsedData;
 
             users.forEach(user =>{
                 if(user.rooms.includes(roomId)){
                     user.ws.send(JSON.stringify({
-                        type:"CHAT",
+                        type:"chat",
                         message,
                         roomId: Number(roomId)
                     }))
