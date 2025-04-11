@@ -15,6 +15,12 @@ type Shape = {
 } | {
     type: "pencil";
     points: { x: number, y: number }[];
+} | {
+    type: "line";
+    offsetX: number;
+    offSetY: number;
+    endX: number;
+    endY: number;
 }
 
 export class Game {
@@ -26,6 +32,8 @@ export class Game {
     private clicked: boolean;
     private startX = 0;
     private startY = 0;
+    private endX = 0;
+    private endY = 0;
     private selectedTool: Tool = "circle";
     private pencilPoints: { x: number, y: number }[] = [];
 
@@ -52,7 +60,7 @@ export class Game {
         this.canvas.removeEventListener("mousemove", this.mouseMoveHandler)
     }
 
-    setTool(tool: "circle" | "pencil" | "rect") {
+    setTool(tool: "circle" | "pencil" | "rect" | "line") {
         this.selectedTool = tool;
     }
 
@@ -108,17 +116,19 @@ export class Game {
     }
     
 
-    mouseDownHandler = (e) => {
+    mouseDownHandler = (e: any) => {
         this.clicked = true
         this.startX = e.clientX
         this.startY = e.clientY
         this.pencilPoints = [{ x: e.offsetX, y: e.offsetY }];
     }
-    mouseUpHandler = (e) => {
+    mouseUpHandler = (e: any) => {
         this.clicked = false
+        this.endX = e.offsetX;
+        this.endY = e.offsetY;
         const width = e.clientX - this.startX;
         const height = e.clientY - this.startY;
-
+        
         const selectedTool = this.selectedTool;
         let shape: Shape | null = null;
         if (selectedTool === "rect") {
@@ -145,6 +155,14 @@ export class Game {
                 points: this.pencilPoints
             }
         }
+        else if (selectedTool === "line"){
+        
+           this.ctx.beginPath();
+           this.ctx.moveTo(this.startX, this.startY);
+           this.ctx.lineTo(this.endX, this.endY);
+           this.ctx.stroke();
+           this.ctx.closePath();
+        }
         
 
         if (!shape) {
@@ -161,7 +179,7 @@ export class Game {
             roomId: this.roomId
         }))
     }
-    mouseMoveHandler = (e) => {
+    mouseMoveHandler = (e: any) => {
         if (this.clicked) {
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
@@ -184,11 +202,9 @@ export class Game {
                 const currentX = e.offsetX;
                 const currentY = e.offsetY;
                 
-                this.pencilPoints.push({ x: currentX, y: currentY });
-                this.clearCanvas()
-                
-                this.ctx.beginPath();
+                this.pencilPoints.push({x: currentX, y: currentY})
                 const len = this.pencilPoints.length;
+                this.ctx.beginPath();
                 if (len > 1) {
                     const prev = this.pencilPoints[len - 2];
                     this.ctx.moveTo(prev.x, prev.y);
@@ -199,6 +215,16 @@ export class Game {
                 }
                 this.ctx.stroke();
                 this.ctx.closePath();
+            }
+            else if(selectedTool === "line"){
+                this.endX = e.offsetX;
+                this.endY = e.offsetY;
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.startX, this.startY);
+                this.ctx.lineTo(this.endX, this.endY);
+                this.ctx.stroke();
+                this.ctx.closePath();
+               
             }
         }
     }
