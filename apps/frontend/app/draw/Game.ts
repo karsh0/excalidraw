@@ -78,7 +78,7 @@ export class Game {
     async init() {
         this.existingShapes = await getExistingShapes(this.roomId);
         console.log(this.existingShapes);
-        this.clearCanvas();
+        this.restore();
     }
 
     initHandlers() {
@@ -89,12 +89,12 @@ export class Game {
                 console.log(message)
                 const parsedShape = JSON.parse(message.message)
                 this.existingShapes.push(parsedShape.shape)
-                this.clearCanvas();
+                this.restore();
             }
         }
     }
 
-    clearCanvas() {
+    restore() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = "rgba(255, 255, 255)";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -212,7 +212,7 @@ export class Game {
         if (this.clicked) {
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
-            this.clearCanvas();
+            this.restore();
             this.ctx.strokeStyle = "rgba(0,0,0)"
             const selectedTool = this.selectedTool;
             console.log(selectedTool)

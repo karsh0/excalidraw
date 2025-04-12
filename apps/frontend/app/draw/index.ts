@@ -24,7 +24,7 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
     
     if(existingShapes){
 
-        clearCanvas(existingShapes, canvas, ctx)
+        restore(existingShapes, canvas, ctx)
     }
     console.log(existingShapes)
 
@@ -96,7 +96,7 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
         if(clicked){
             const height = e.clientX - startX;
             const width = e.clientY - startY;
-            clearCanvas(existingShapes, canvas, ctx)
+            restore(existingShapes, canvas, ctx)
             ctx.strokeStyle = "rgba(255,255,255)"
             ctx.strokeRect(startX, startY, width, height)
         }
@@ -104,7 +104,7 @@ export async function InitCanvas(canvas: HTMLCanvasElement, roomId: string, sock
 }
 
 
-function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
+function restore(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
     ctx.clearRect(0, 0 ,canvas.width ,canvas.height)
     ctx.fillStyle = "rgba(0,0,0)"
     ctx.fillRect(0, 0 ,canvas.width ,canvas.height)
