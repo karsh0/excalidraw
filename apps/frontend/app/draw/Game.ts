@@ -48,7 +48,7 @@ type Shape = {
         private pencilPoints: { x: number; y: number }[] = [];
         private dragStart: { x: number; y: number };
         private cameraZoom: number;
-        private cameraOffset: { x: number; y: number };
+        private pan: { x: number; y: number };
 
         public socket: WebSocket;
 
@@ -61,7 +61,7 @@ type Shape = {
         this.socket = socket;
         this.clicked = false;
         this.dragStart = { x: 0, y: 0 };
-        this.cameraOffset = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        this.pan = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         this.cameraZoom = 1;
         this.init();
         this.initHandlers();
@@ -99,27 +99,30 @@ type Shape = {
   
     restore() {
       this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height);
     
-      this.ctx.setTransform(this.cameraZoom,0, 0,this.cameraZoom,this.cameraOffset.x,
-        this.cameraOffset.y
-      );
+      this.ctx.setTransform( this.cameraZoom, 0,  0, this.cameraZoom, this.pan.x, this.pan.y);
     
-      this.ctx.clearRect(-5000, -5000, 10000, 10000);
+      this.ctx.clearRect(-5000, -5000, 10000, 10000);//clear max area
+
       this.ctx.fillStyle = "#ffffff";
     
       this.existingShapes.forEach((shape) => {
         this.ctx.strokeStyle = "black";
+
         switch (shape.type) {
           case "rect":
             this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
             break;
+
           case "circle":
             this.ctx.beginPath();
             this.ctx.arc(shape.centerX,shape.centerY,shape.radius,0,Math.PI * 2);
             this.ctx.stroke();
             this.ctx.closePath();
             break;
+
           case "pencil":
             this.ctx.beginPath();
             const points = shape.points;
@@ -130,6 +133,7 @@ type Shape = {
             this.ctx.stroke();
             this.ctx.closePath();
             break;
+
           case "line":
             this.ctx.beginPath();
             this.ctx.moveTo(shape.startX, shape.startY);
@@ -137,6 +141,7 @@ type Shape = {
             this.ctx.stroke();
             this.ctx.closePath();
             break;
+
           case "arrow":
             const headlen = 10;
             let dx = shape.endX - shape.startX;
@@ -157,6 +162,7 @@ type Shape = {
             this.ctx.stroke();
             this.ctx.closePath();
             break;
+
           case "text":
             this.ctx.font = "24px serif";
             this.ctx.strokeText(shape.text, shape.x, shape.y);
@@ -167,8 +173,8 @@ type Shape = {
   
     getTransformedMousePos = (e: MouseEvent) => {
       const rect = this.canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left - this.cameraOffset.x) / this.cameraZoom;
-      const y = (e.clientY - rect.top - this.cameraOffset.y) / this.cameraZoom;
+      const x = (e.clientX - rect.left - this.pan.x) / this.cameraZoom;
+      const y = (e.clientY - rect.top - this.pan.y) / this.cameraZoom;
       return { x, y };
     };
   
@@ -189,8 +195,8 @@ type Shape = {
     
       if (this.selectedTool === "drag") {
         const screenPos = { x: e.clientX, y: e.clientY };
-        this.dragStart.x = screenPos.x / this.cameraZoom - this.cameraOffset.x;
-        this.dragStart.y = screenPos.y / this.cameraZoom - this.cameraOffset.y;
+        this.dragStart.x = screenPos.x / this.cameraZoom - this.pan.x;
+        this.dragStart.y = screenPos.y / this.cameraZoom - this.pan.y;
       }
     };
   
@@ -215,6 +221,7 @@ type Shape = {
             height,
           };
           break;
+          
         case "circle":
           const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
           shape = {
@@ -224,12 +231,14 @@ type Shape = {
             radius,
           };
           break;
+
         case "pencil":
           shape = {
             type: "pencil",
             points: this.pencilPoints,
           };
           break;
+
         case "line":
           shape = {
             type: "line",
@@ -239,6 +248,7 @@ type Shape = {
             endY: this.endY,
           };
           break;
+          
         case "arrow":
           shape = {
             type: "arrow",
@@ -275,8 +285,8 @@ type Shape = {
     
       if (this.selectedTool === "drag") {
         const screenPos = { x: e.clientX, y: e.clientY };
-        this.cameraOffset.x = screenPos.x / this.cameraZoom - this.dragStart.x;
-        this.cameraOffset.y = screenPos.y / this.cameraZoom - this.dragStart.y;
+        this.pan.x = screenPos.x / this.cameraZoom - this.dragStart.x;
+        this.pan.y = screenPos.y / this.cameraZoom - this.dragStart.y;
         this.restore();
         return;
       }
@@ -288,6 +298,7 @@ type Shape = {
         case "rect":
           this.ctx.strokeRect(this.startX, this.startY, width, height);
           break;
+
         case "circle":
           const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
           this.ctx.beginPath();
@@ -301,6 +312,7 @@ type Shape = {
           this.ctx.stroke();
           this.ctx.closePath();
           break;
+
         case "pencil":
           this.pencilPoints.push({ x: pos.x, y: pos.y });
           const len = this.pencilPoints.length;
@@ -313,6 +325,7 @@ type Shape = {
             this.ctx.closePath();
           }
           break;
+
         case "line":
           this.ctx.beginPath();
           this.ctx.moveTo(this.startX, this.startY);
@@ -320,6 +333,7 @@ type Shape = {
           this.ctx.stroke();
           this.ctx.closePath();
           break;
+
         case "arrow":
           const headlen = 10;
           let dx = this.endX - this.startX;
@@ -340,6 +354,7 @@ type Shape = {
           this.ctx.stroke();
           this.ctx.closePath();
           break;
+
       }
     };
   
