@@ -44,7 +44,7 @@ function Topbar({selectedTool, setSelectedTool}: {
     selectedTool: Tool,
     setSelectedTool: (s: Tool) => void
 }) {
-    return <div className="fixed w-fit top-2 left-1/2 -translate-x-1/2 bg-white">
+    return <div className="fixed w-fit top-4 left-1/2 -translate-x-1/2 bg-white">
             <div className="flex gap-2 px-2 py-2 bg-white border rounded-xl">
                 <IconButton onClick={() => {
                     setSelectedTool("drag")

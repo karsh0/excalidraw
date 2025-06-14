@@ -56,6 +56,7 @@ type Shape = {
 
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d")!;
+        
         this.existingShapes = [];
         this.roomId = roomId;
         this.socket = socket;
@@ -106,10 +107,11 @@ type Shape = {
     
       this.ctx.clearRect(-5000, -5000, 10000, 10000);//clear max area
 
-      this.ctx.fillStyle = "#ffffff";
+      this.ctx.fillStyle = "white";
     
       this.existingShapes.forEach((shape) => {
-        this.ctx.strokeStyle = "black";
+        this.ctx.strokeStyle = "white";
+         this.ctx.lineWidth = 3;
 
         switch (shape.type) {
           case "rect":
@@ -132,6 +134,7 @@ type Shape = {
             }
             this.ctx.stroke();
             this.ctx.closePath();
+           
             break;
 
           case "line":
@@ -292,7 +295,7 @@ type Shape = {
       }
     
       this.restore();
-      this.ctx.strokeStyle = "black";
+      this.ctx.strokeStyle = "white";
     
       switch (this.selectedTool) {
         case "rect":
